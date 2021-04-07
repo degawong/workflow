@@ -15,7 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}    
-
+    steps:
+    - name: infomation
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      
   g++:
     runs-on: ubuntu-latest
     steps:
