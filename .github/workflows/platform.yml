@@ -20,7 +20,7 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
-  g++:
+  gcc:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
