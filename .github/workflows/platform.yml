@@ -39,7 +39,7 @@ jobs:
         CXX: g++
       shell: bash
       working-directory: ${{runner.workspace}}/g++
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -j 2
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
     - name: build project
       working-directory: ${{runner.workspace}}/g++
@@ -70,7 +70,7 @@ jobs:
         CXX: clang++
       shell: bash
       working-directory: ${{runner.workspace}}/clang
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -j 2
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
     - name: build project
       working-directory: ${{runner.workspace}}/clang
