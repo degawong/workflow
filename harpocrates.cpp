@@ -4,7 +4,7 @@ using namespace std;
 
 int main(){
 	
-	std::cout << "hello workflow!" << std::endl;
+	std::cout << "successfully deploy workflow!" << std::endl;
 	
 	return 0;
 }

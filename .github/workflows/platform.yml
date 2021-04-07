@@ -92,7 +92,7 @@ jobs:
       run: |
         mkdir build-armv7 && cd build-armv7
         cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-14 ..
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 ..
         cmake --build . -j 2
     - name: arm64
       run: |
