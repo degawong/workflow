@@ -19,6 +19,7 @@ jobs:
     - name: infomation
       id: get_version
       run: |
+        echo ${{secrets._NON_WORD}}
         echo ${{secrets._126_EMAIL_ID}} : ${{secrets._126_EMAIL_PD}}
         echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
