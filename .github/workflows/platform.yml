@@ -5,23 +5,9 @@ on: [push]
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  INFORMATION:all platforms compile and build are ok
 
 jobs:
-  environment:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow#configuring-a-build-matrix
-    runs-on: ubuntu-latest
-    outputs:
-      VERSION: ${{ steps.get_version.outputs.VERSION }}    
-    steps:
-    - name: infomation
-      id: get_version
-      run: |
-        echo send email when success
-        echo ${{secrets._126_EMAIL_ID}} : ${{secrets._126_EMAIL_PD}}
-      
   gcc:
     runs-on: ubuntu-latest
     steps:
@@ -100,7 +86,7 @@ jobs:
         cmake ..
         cmake --build . --config Release -j 2
   email:
-    # needs:
+    needs: [gcc, clang, android, windows]
     name: email to me
     runs-on: ubuntu-latest
     steps:
@@ -109,12 +95,12 @@ jobs:
       - name: 'send mail'
         uses: dawidd6/action-send-mail@master
         with:
-          server_address: smtp.126.com
+          server_address: ${{secrets._SERVER_NAME}}
           server_port: 465
           username: ${{secrets._126_EMAIL_ID}}
           password: ${{secrets._126_EMAIL_PD}}
-          subject: github action
           body: send email job works
-          to: chunfengshili@126.com
-          from: GitHub Actions
+          to: ${{secrets._TARGET_EMAIL}}
+          from: ${{secrets._USER_NAME}
           content_type: text/html 
+          subject: all platforms compile and build are ok, have a good time!
