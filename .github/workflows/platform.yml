@@ -100,6 +100,6 @@ jobs:
           password: ${{secrets._126_EMAIL_PD}}
           body: send email job works
           to: ${{secrets._TARGET_EMAIL}}
-          from: ${{secrets._USER_NAME}
+          from: ${{secrets._USER_NAME}}
           content_type: text/html 
           subject: all platforms compile and build are ok, have a good time!
