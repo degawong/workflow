@@ -31,25 +31,36 @@ jobs:
     - name: create build environment
       run: |
         sudo apt-get install gcc-multilib g++-multilib
-        cmake -E make_directory ${{runner.workspace}}/g++      
+        cmake -E make_directory ${{runner.workspace}}/x32
+        cmake -E make_directory ${{runner.workspace}}/x64
     
-    - name: configure cmake
+    - name: config x32
       env:
         CC: gcc
         CXX: g++
+        CXXFLAGS: -m32
       shell: bash
-      working-directory: ${{runner.workspace}}/g++
+      working-directory: ${{runner.workspace}}/x32
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
-    - name: build project
-      working-directory: ${{runner.workspace}}/g++
+    - name: build x32
+      working-directory: ${{runner.workspace}}/x32
       shell: bash
       run: cmake --build . --config $BUILD_TYPE -j 2
 
-    - name: test project
-      working-directory: ${{runner.workspace}}/g++
+    - name: config x64
+      env:
+        CC: gcc
+        CXX: g++
+        CXXFLAGS: -m64
       shell: bash
-      run: ctest -C $BUILD_TYPE
+      working-directory: ${{runner.workspace}}/x64
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    
+    - name: build x64
+      working-directory: ${{runner.workspace}}/x64
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE -j 2
 
   clang:
     runs-on: ubuntu-latest
@@ -62,25 +73,36 @@ jobs:
     - name: create build environment
       run: |
         sudo apt-get install gcc-multilib g++-multilib
-        cmake -E make_directory ${{runner.workspace}}/clang      
+        cmake -E make_directory ${{runner.workspace}}/x32
+        cmake -E make_directory ${{runner.workspace}}/x64
     
-    - name: configure cmake
+    - name: config x32
       env:
         CC: clang
         CXX: clang++
+        CXXFLAGS: -m32
       shell: bash
-      working-directory: ${{runner.workspace}}/clang
+      working-directory: ${{runner.workspace}}/x32
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
-    - name: build project
-      working-directory: ${{runner.workspace}}/clang
+    - name: build x32
+      working-directory: ${{runner.workspace}}/x32
       shell: bash
       run: cmake --build . --config $BUILD_TYPE -j 2
 
-    - name: test project
-      working-directory: ${{runner.workspace}}/clang
+    - name: config x64
+      env:
+        CC: clang
+        CXX: clang++
+        CXXFLAGS: -m64
       shell: bash
-      run: ctest -C $BUILD_TYPE
+      working-directory: ${{runner.workspace}}/x64
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    
+    - name: build x64
+      working-directory: ${{runner.workspace}}/x64
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE -j 2
 
   android:
     runs-on: ubuntu-latest
