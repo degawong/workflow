@@ -18,7 +18,9 @@ jobs:
     steps:
     - name: infomation
       id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      run: |
+        echo ${{secrets._126_EMAIL_ID}} : ${{secrets._126_EMAIL_PD}}
+        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
   gcc:
     runs-on: ubuntu-latest
