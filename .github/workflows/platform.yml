@@ -19,9 +19,8 @@ jobs:
     - name: infomation
       id: get_version
       run: |
-        echo ${{secrets._NON_WORD}}
+        echo send email when success
         echo ${{secrets._126_EMAIL_ID}} : ${{secrets._126_EMAIL_PD}}
-        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
   gcc:
     runs-on: ubuntu-latest
@@ -100,4 +99,22 @@ jobs:
         mkdir x64; cd x64
         cmake ..
         cmake --build . --config Release -j 2
-      
+  email:
+    # needs:
+    name: email to me
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'checkout'
+        uses: actions/checkout@v1
+      - name: 'send mail'
+        uses: dawidd6/action-send-mail@master
+        with:
+          server_address: smtp.126.com
+          server_port: 465
+          username: ${{secrets._126_EMAIL_ID}}
+          password: ${{secrets._126_EMAIL_PD}}
+          subject: github action
+          body: send email job works
+          to: chunfengshili@126.com
+          from: GitHub Actions
+          content_type: text/html 
