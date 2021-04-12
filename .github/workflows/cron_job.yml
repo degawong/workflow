@@ -4,7 +4,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events
-    - cron:  '00 0 * * *'
+    - cron:  '00 0,8 * * *'
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
