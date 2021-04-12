@@ -1,0 +1,90 @@
+name: crontab
+
+on: 
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events
+    - cron:  '00 0 * * *'
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  gcc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: apt update
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc-multilib g++-multilib
+
+    - name: x32
+      run: |
+        mkdir x32 && cd x32
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x86 ..
+        cmake --build . --config $BUILD_TYPE -j 2
+    
+    - name: x64
+      run: |
+        mkdir x64 && cd x64
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x64 ..
+        cmake --build . --config $BUILD_TYPE -j 2
+
+  clang:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: apt update
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc-multilib g++-multilib
+
+    - name: x32
+      run: |
+        mkdir x32 && cd x32
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x86 ..
+        cmake --build . --config $BUILD_TYPE -j 2
+    
+    - name: x64
+      run: |
+        mkdir x64 && cd x64
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x64 ..
+        cmake --build . --config $BUILD_TYPE -j 2
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: ndk-fix-debug
+      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake
+    - name: arm32
+      run: |
+        mkdir arm32 && cd arm32
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 ..
+        cmake --build . -j 2
+    - name: arm64
+      run: |
+        mkdir arm64 && cd arm64
+        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DANDROID_ABI="arm64-v8a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 ..        
+        cmake --build . -j 2
+        
+  windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: x86
+      run: |
+        mkdir x86; cd x86
+        cmake -T v142,host=x64 -A Win32 ..
+        cmake --build . --config $BUILD_TYPE -j 2
+    - name: x64
+      run: |
+        mkdir x64; cd x64
+        cmake ..
+        cmake --build . --config $BUILD_TYPE -j 2
