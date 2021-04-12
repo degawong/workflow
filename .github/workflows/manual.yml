@@ -1,21 +1,19 @@
-name: Manually triggered workflow
+name: manually triggered workflow
 on:
   # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#manual-events
   workflow_dispatch:
     inputs:
-      name:
-        description: 'Person to greet'
+      id:
+        description: 'use name'
         required: true
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
-        default: 'The Octoverse'
+        default: 'degawong'
+      password:
+        description: 'ur password'
+        required: true
 
 jobs:
-  say_hello:
+  trigger:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Hello ${{ github.event.inputs.name }}!"
-        echo "- in ${{ github.event.inputs.home }}!"
+        echo "hello ${{ github.event.inputs.id }}!"
