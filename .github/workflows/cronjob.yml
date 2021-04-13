@@ -5,7 +5,7 @@ on:
     # * is a special character in YAML so you have to quote this string
     # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events
     # - cron:  '00 0,8 * * *'
-    - cron:  '* * * * *'
+    - cron:  '0 0 * * 1-5'
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -89,3 +89,38 @@ jobs:
         mkdir x64; cd x64
         cmake ..
         cmake --build . --config $BUILD_TYPE -j 2
+  email:
+    needs: [gcc, clang, android, windows]
+    name: email to me
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'checkout'
+        uses: actions/checkout@v1
+      - name: 'send mail'
+        uses: dawidd6/action-send-mail@master
+        with:
+          server_address: ${{secrets._SERVER_NAME}}
+          server_port: 465
+          username: ${{secrets._126_EMAIL_ID}}
+          password: ${{secrets._126_EMAIL_PD}}
+          body: all platform works well.
+          to: ${{secrets._TARGET_EMAIL}}
+          from: ${{secrets._USER_NAME}}
+          content_type: text/html 
+          subject: cron action works!
+  # transfer:
+  #   # https://github.com/marketplace/actions/scp-command-to-transfer-files
+  #   needs: [gcc, clang, android, windows]
+  #   name: copy build library to me
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: copy file via ssh password
+  #       uses: appleboy/scp-action@master
+  #       with:
+  #         host: ${{ secrets._HOST_ADDRESS }}
+  #         username: ${{ secrets._SSH_USERNAME }}
+  #         password: ${{ secrets._SSH_PASSWORD }}
+  #         port: ${{ secrets._SSH_PORT }}
+  #         source: "${{ secrets._TO_CPOY }}"
+  #         target: "${{ secrets._CPOY_TO }}"

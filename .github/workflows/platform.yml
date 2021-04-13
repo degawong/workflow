@@ -84,38 +84,4 @@ jobs:
         mkdir x64; cd x64
         cmake ..
         cmake --build . --config Release -j 2
-  email:
-    needs: [gcc, clang, android, windows]
-    name: email to me
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'checkout'
-        uses: actions/checkout@v1
-      - name: 'send mail'
-        uses: dawidd6/action-send-mail@master
-        with:
-          server_address: ${{secrets._SERVER_NAME}}
-          server_port: 465
-          username: ${{secrets._126_EMAIL_ID}}
-          password: ${{secrets._126_EMAIL_PD}}
-          body: send email job works
-          to: ${{secrets._TARGET_EMAIL}}
-          from: ${{secrets._USER_NAME}}
-          content_type: text/html 
-          subject: all platforms compile and build are ok, have a good time!
-  # transfer:
-  #   # https://github.com/marketplace/actions/scp-command-to-transfer-files
-  #   needs: [gcc, clang, android, windows]
-  #   name: copy build library to me
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: copy file via ssh password
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets._HOST_ADDRESS }}
-  #         username: ${{ secrets._SSH_USERNAME }}
-  #         password: ${{ secrets._SSH_PASSWORD }}
-  #         port: ${{ secrets._SSH_PORT }}
-  #         source: "${{ secrets._TO_CPOY }}"
-  #         target: "${{ secrets._CPOY_TO }}"
+

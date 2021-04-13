@@ -1,4 +1,4 @@
-name: manually triggered workflow
+name: manual
 on:
   # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#manual-events
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       id:
         description: 'use name'
         required: true
-        default: 'degawong'
+        # default: 'degawong'
       password:
         description: 'ur password'
         required: true
@@ -17,3 +17,21 @@ jobs:
     steps:
     - run: |
         echo "hello ${{ github.event.inputs.id }}!"
+        echo "manually triggered workflow"
+  # transfer:
+  #   # transfer job library to me
+  #   # https://github.com/marketplace/actions/scp-command-to-transfer-files
+  #   needs: [gcc, clang, android, windows]
+  #   name: copy build library to me
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: copy file via ssh password
+  #       uses: appleboy/scp-action@master
+  #       with:
+  #         host: ${{ secrets._HOST_ADDRESS }}
+  #         username: ${{ secrets._SSH_USERNAME }}
+  #         password: ${{ secrets._SSH_PASSWORD }}
+  #         port: ${{ secrets._SSH_PORT }}
+  #         source: "${{ secrets._TO_CPOY }}"
+  #         target: "${{ secrets._CPOY_TO }}"        
