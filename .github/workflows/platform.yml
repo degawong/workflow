@@ -89,17 +89,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: config
+      working-directory: ${{github.workspace}}
       run: |
         mkdir x86
         mkdir x64
     - name: x86
       working-directory: ${{github.workspace}}/x86
       run: |
-        cmake -T v142,host=x64 -A Win32 ..
+        cmake $GITHUB_WORKSPACE -T v142,host=x64 -A Win32 ..
         cmake --build . --config Release -j 2
     - name: x64
       working-directory: ${{github.workspace}}/x64
       run: |
-        cmake ..
+        cmake $GITHUB_WORKSPACE
         cmake --build . --config Release -j 2
 
