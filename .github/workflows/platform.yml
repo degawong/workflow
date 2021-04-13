@@ -70,7 +70,7 @@ jobs:
       working-directory: ${{github.workspace}}
       run: |
         mkdir -p arm32
-        mkdir -p arm43
+        mkdir -p arm64
     - name: arm32
       shell: bash
       working-directory: ${{github.workspace}}/arm32
@@ -100,6 +100,6 @@ jobs:
     - name: x64
       working-directory: ${{github.workspace}}/x64
       run: |
-        cmake -T v142,host=x64 -A Win64 ..
+        cmake ..
         cmake --build . --config Release -j 2
 
