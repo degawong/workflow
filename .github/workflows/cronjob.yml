@@ -5,10 +5,9 @@ on:
     # * is a special character in YAML so you have to quote this string
     # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events
     # - cron:  '00 0,8 * * *'
-    - cron:  '0 0 * * 1-5'
+    - cron:  '0 0 * * *'
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
@@ -17,21 +16,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: apt update
+    - name: config
+      shell: bash
+      working-directory: ${{github.workspace}}
       run: |
+        mkdir -p x32
+        mkdir -p x64
         sudo apt-get update
         sudo apt-get install gcc-multilib g++-multilib
-
     - name: x32
+      shell: bash
+      working-directory: ${{github.workspace}}/x32
       run: |
-        mkdir x32 && cd x32
-        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x86 ..
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x86
         cmake --build . --config $BUILD_TYPE -j 2
-    
     - name: x64
+      shell: bash
+      working-directory: ${{github.workspace}}/x64
       run: |
-        mkdir x64 && cd x64
-        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x64 ..
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_SYSTEM_PROCESSOR=x64
         cmake --build . --config $BUILD_TYPE -j 2
 
   clang:
@@ -39,56 +42,72 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: apt update
+    - name: config
+      shell: bash
+      working-directory: ${{github.workspace}}
       run: |
+        mkdir -p x32
+        mkdir -p x64
         sudo apt-get update
         sudo apt-get install gcc-multilib g++-multilib
-
     - name: x32
+      shell: bash
+      working-directory: ${{github.workspace}}/x32
       run: |
-        mkdir x32 && cd x32
-        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x86 ..
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x86
         cmake --build . --config $BUILD_TYPE -j 2
-    
     - name: x64
+      shell: bash
+      working-directory: ${{github.workspace}}/x64
       run: |
-        mkdir x64 && cd x64
-        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x64 ..
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x64
         cmake --build . --config $BUILD_TYPE -j 2
 
   android:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: ndk-fix-debug
+    - name: ndk-fix-bug
       run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake
-    - name: arm32
+    - name: config
+      shell: bash
+      working-directory: ${{github.workspace}}
       run: |
-        mkdir arm32 && cd arm32
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-            -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 ..
+        mkdir -p arm32
+        mkdir -p arm64
+    - name: arm32
+      shell: bash
+      working-directory: ${{github.workspace}}/arm32
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
         cmake --build . -j 2
     - name: arm64
+      shell: bash
+      working-directory: ${{github.workspace}}/arm64
       run: |
-        mkdir arm64 && cd arm64
-        cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-            -DANDROID_ABI="arm64-v8a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21 ..        
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DANDROID_ABI="arm64-v8a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
         cmake --build . -j 2
         
   windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - name: config
+      working-directory: ${{github.workspace}}
+      run: |
+        mkdir x86
+        mkdir x64
     - name: x86
+      working-directory: ${{github.workspace}}/x86
       run: |
-        mkdir x86; cd x86
-        cmake -T v142,host=x64 -A Win32 ..
-        cmake --build . --config $BUILD_TYPE -j 2
+        cmake ${{ github.workspace }} -T v142,host=x64 -A Win32
+        cmake --build . --config Release -j 2
     - name: x64
+      working-directory: ${{github.workspace}}/x64
       run: |
-        mkdir x64; cd x64
-        cmake ..
-        cmake --build . --config $BUILD_TYPE -j 2
+        cmake ${{ github.workspace }}
+        cmake --build . --config Release -j 2
+
   email:
     needs: [gcc, clang, android, windows]
     name: email to me
@@ -108,6 +127,7 @@ jobs:
           from: ${{secrets._USER_NAME}}
           content_type: text/html 
           subject: cron action works!
+          
   # transfer:
   #   # https://github.com/marketplace/actions/scp-command-to-transfer-files
   #   needs: [gcc, clang, android, windows]

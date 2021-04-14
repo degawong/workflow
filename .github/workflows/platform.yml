@@ -1,9 +1,15 @@
 name: platform
 
-on: [push]
+on: 
+  push:
+    branches:
+      - "**" 
+    # paths:
+    	# - 下列文件的变更触发部署
+    # paths-ignore:
+      # - 下列文件的变更不触发部署
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
