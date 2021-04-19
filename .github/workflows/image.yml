@@ -8,4 +8,4 @@ jobs:
       image: pytorch/pytorch
     steps:
     - run: |
-      conda --version
+        conda --version
