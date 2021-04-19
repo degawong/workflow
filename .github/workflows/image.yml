@@ -7,7 +7,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     container:
-      image:  gpuci:miniconda-cuda
+      image: pytorch/pytorch
     steps:
     - run: |
         conda --version
