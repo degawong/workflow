@@ -93,9 +93,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: android
-        path: 
-        - arm32/*.a
-        - arm64/*.a
+        retention-days: 90
+        path: |
+          arm32/*.a
+          arm64/*.a
 
   windows:
     runs-on: windows-latest
