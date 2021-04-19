@@ -10,7 +10,16 @@ on:
       password:
         description: 'ur password'
         required: true
-
+# jobs:
+  # matrix-build:
+    # strategy:
+      # matrix:
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+      # fail-fast: false
+    # runs-on: ${{ matrix.os }}
+    # steps:
+    # - run: |
+      # echo ${{ matrix.os }}
 jobs:
   trigger:
     runs-on: ubuntu-latest
