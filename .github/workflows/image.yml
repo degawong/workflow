@@ -1,8 +1,6 @@
 name: image
 on:
-  push:
-    branches:
-      - "**" 
+  workflow_dispatch
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -10,4 +8,4 @@ jobs:
       image: pytorch/pytorch
     steps:
     - run: |
-        conda --version
+      conda --version
