@@ -95,8 +95,8 @@ jobs:
         name: android
         retention-days: 90
         path: |
-          arm32/*.a
-          arm64/*.a
+          arm32/*.o
+          arm64/*.o
 
   windows:
     runs-on: windows-latest
