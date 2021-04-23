@@ -1,9 +1,10 @@
 name: android
 
 on: 
-  push:
-    branches:
-      - "**" 
+  workflow_dispatch
+  # push:
+  #   branches:
+  #     - "**" 
     # paths:
       # - 下列文件的变更触发部署
     # paths-ignore:

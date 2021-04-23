@@ -1,0 +1,27 @@
+name: package
+on:
+  # https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#manual-events
+  workflow_dispatch:
+    inputs:
+      id:
+        description: 'ur name'
+        required: true
+      password:
+        description: 'ur word'
+        required: true
+        # default: 'hello world!'
+
+jobs:
+  trigger:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false  
+    runs-on: ${{ matrix.os }}
+    container:
+      image: pytorch/pytorch    
+    steps:
+    - run: |
+        conda --version
+        echo ${{ matrix.os }}
+        echo "hello ${{ github.event.inputs.id }}!"

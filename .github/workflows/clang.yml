@@ -1,0 +1,47 @@
+name: clang
+
+on: 
+  workflow_dispatch
+
+env:
+  CONFIG: Release
+
+jobs:
+  clang:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          x32/*
+        key: ${{ runner.os }}-clang-x32
+    - uses: actions/cache@v2
+      with:
+        path: |
+          x64/*
+        key: ${{ runner.os }}-clang-x64
+    - name: make directory
+      working-directory: ${{github.workspace}}
+      run: |
+        cmake -E make_directory x32
+        cmake -E make_directory x64
+        sudo apt-get install gcc-multilib g++-multilib
+    - name: x32
+      working-directory: ${{github.workspace}}/x32
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x86
+        cmake --build . --config $BUILD_TYPE -j 2
+    - name: x64
+      working-directory: ${{github.workspace}}/x64
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="-m64" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_SYSTEM_PROCESSOR=x64
+        cmake --build . --config $BUILD_TYPE -j 2
+    - name: artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: clang
+        retention-days: 90
+        path: |
+          x32/
+          x64/

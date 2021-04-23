@@ -1,13 +1,7 @@
 name: windows
 
 on: 
-  push:
-    branches:
-      - "**" 
-    # paths:
-      # - 下列文件的变更触发部署
-    # paths-ignore:
-      # - 下列文件的变更不触发部署
+  workflow_dispatch
 
 env:
   CONFIG: Release
