@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 cmake_minimum_required(VERSION 3.0)
 
-add_definitions("-g")
-
 file(
 	GLOB_RECURSE
 	src_file
