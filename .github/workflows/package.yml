@@ -15,7 +15,8 @@ jobs:
   trigger:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
+        # Error: Container operations are only supported on Linux runners
       fail-fast: false  
     runs-on: ${{ matrix.os }}
     container:
