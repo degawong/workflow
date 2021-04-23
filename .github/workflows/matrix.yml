@@ -9,5 +9,5 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-    - run: |
-      echo ${{ matrix.os }}
+    - name: os_name
+      run: echo ${{ matrix.os }}
