@@ -13,7 +13,7 @@ env:
   CONFIG: Release
 
 jobs:
-  windows:
+  android:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           arm64/*
         key: ${{ runner.os }}-arm64
     - name: bug
-      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmak        
+      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake
     - name: make directory
       working-directory: ${{github.workspace}}
       run: |
