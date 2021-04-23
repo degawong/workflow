@@ -1,4 +1,4 @@
-name: platform
+name: windows
 
 on: 
   push:
@@ -20,12 +20,12 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: |
-          x86
+          x86/*
         key: ${{ runner.os }}-x86
     - uses: actions/cache@v2
       with:
         path: |
-          x64
+          x64/*
         key: ${{ runner.os }}-x64
     - name: make directory
       working-directory: ${{github.workspace}}
@@ -42,3 +42,11 @@ jobs:
       run: |
         cmake $env:GITHUB_WORKSPACE
         cmake --build . --config $env:CONFIG -j 2
+    - name: artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows
+        retention-days: 90
+        path: |
+          x86/
+          x64/

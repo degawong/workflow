@@ -1,0 +1,54 @@
+name: android
+
+on: 
+  push:
+    branches:
+      - "**" 
+    # paths:
+      # - 下列文件的变更触发部署
+    # paths-ignore:
+      # - 下列文件的变更不触发部署
+
+env:
+  CONFIG: Release
+
+jobs:
+  windows:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          arm32/*
+        key: ${{ runner.os }}-arm32
+    - uses: actions/cache@v2
+      with:
+        path: |
+          arm64/*
+        key: ${{ runner.os }}-arm64
+    - name: bug
+      run: sed -i -e '/^  -g$/d' $ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmak        
+    - name: make directory
+      working-directory: ${{github.workspace}}
+      run: |
+        cmake -E make_directory arm32
+        cmake -E make_directory arm64
+    - name: arm32
+      working-directory: ${{github.workspace}}/arm32
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$CONFIG -DANDROID_ABI="armeabi-v7a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
+        cmake --build . -j 2
+    - name: arm64
+      working-directory: ${{github.workspace}}/arm64
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$ANDROID_HOME/ndk-bundle/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$CONFIG -DANDROID_ABI="arm64-v8a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
+        cmake --build . -j 2
+    - name: artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: android
+        retention-days: 90
+        path: |
+          arm32/
+          arm64/
