@@ -1,7 +1,6 @@
 name: catch
 on: 
-  watch:
-    types: started
+  workflow_dispatch
 jobs:
   catch:
     runs-on: macos-latest
