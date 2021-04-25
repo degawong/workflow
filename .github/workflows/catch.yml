@@ -1,0 +1,11 @@
+name: catch
+on: 
+  watch:
+    types: started
+jobs:
+  catch:
+    runs-on: macos-latest
+    steps:
+     - uses: actions/checkout@v2
+     - name: catch_session
+       uses: csexton/debugger-action@master
