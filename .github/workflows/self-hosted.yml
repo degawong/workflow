@@ -1,0 +1,50 @@
+name: self-hosted
+
+on: 
+  workflow_dispatch
+  
+env:
+  CONFIG: Release
+
+jobs:
+  self-hosted:
+    runs-on: degawong
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          arm32/*
+        key: ${{ runner.os }}-arm32
+    - uses: actions/cache@v2
+      with:
+        path: |
+          arm64/*
+        key: ${{ runner.os }}-arm64
+    - name: activate
+      run: |
+        # activate android_home
+        source /etc/profile
+    - name: make directory
+      working-directory: ${{github.workspace}}
+      run: |
+        cmake -E make_directory arm32
+        cmake -E make_directory arm64
+    - name: arm32
+      working-directory: ${{github.workspace}}/arm32
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$NDK_HOME/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$CONFIG -DANDROID_ABI="armeabi-v7a with NEON" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
+        cmake --build . -j 2
+    - name: arm64
+      working-directory: ${{github.workspace}}/arm64
+      run: |
+        cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$NDK_HOME/build/cmake/android.toolchain.cmake -DCMAKE_BUILD_TYPE=$CONFIG -DANDROID_ABI="arm64-v8a" -DANDROID_ARM_NEON=ON -DANDROID_PLATFORM=android-21
+        cmake --build . -j 2
+    - name: artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: android
+        retention-days: 90
+        path: |
+          arm32/
+          arm64/
