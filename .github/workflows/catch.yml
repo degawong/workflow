@@ -3,8 +3,8 @@ on:
   workflow_dispatch
 jobs:
   catch:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
      - uses: actions/checkout@v2
      - name: catch_session
-       uses: csexton/debugger-action@master
+       uses: mxschmitt/action-tmate@v3
