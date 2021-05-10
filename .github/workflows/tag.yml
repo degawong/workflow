@@ -2,7 +2,8 @@ name: tag
 
 on: 
   push:
-    tags
+    tags:
+      - '*'
 
 jobs:
   info:
